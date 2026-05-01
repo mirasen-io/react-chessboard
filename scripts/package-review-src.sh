@@ -19,7 +19,7 @@ ARTIFACTS_DIR="$ROOT_DIR/artifacts"
 STAGING_DIR="$ARTIFACTS_DIR/.review-src-staging"
 
 TIMESTAMP="$(date +"%Y%m%d-%H%M%S")"
-NAME_PREFIX="npm-template-typescript-src-review"
+NAME_PREFIX="react-chessboard-src-review"
 FULL_MODE="false"
 
 for arg in "$@"; do
@@ -60,6 +60,9 @@ fi
 cp -R "$ROOT_DIR/src" "$STAGING_DIR/src"
 copy_if_exists "tests"
 copy_if_exists "scripts"
+copy_if_exists "docs"
+copy_if_exists ".github"
+copy_if_exists "CHANGELOG.md"
 
 copy_if_exists "src-old"
 copy_if_exists "tests-old"
@@ -81,11 +84,7 @@ copy_if_exists ".npmignore"
 
 # Optional extras in full mode
 if [[ "$FULL_MODE" == "true" ]]; then
-  copy_if_exists "scripts"
   copy_if_exists "examples"
-  copy_if_exists "docs"
-  copy_if_exists ".github"
-  copy_if_exists "CHANGELOG.md"
 fi
 
 find "$STAGING_DIR" -type d \( \
