@@ -23,7 +23,7 @@ jobs:
   reset-contribution:
     # prevents this action from running on forks
     if: |
-      github.repository == 'kt-npm-modules/npm-typescript-template' &&
+      github.repository == 'mirasen-io/react-chessboard' &&
       github.event.pull_request.merged == true &&
       github.event.pull_request.head.ref == 'contribution' &&
       github.event.pull_request.base.ref == 'main'

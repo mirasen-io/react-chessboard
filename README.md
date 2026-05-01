@@ -1,21 +1,409 @@
-[![NPM Version](https://img.shields.io/npm/v/%40ktarmyshov%2Fnpm-typescript-template)](https://www.npmjs.com/package/@ktarmyshov/npm-typescript-template)
-[![CI](https://github.com/kt-npm-modules/npm-typescript-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kt-npm-modules/npm-typescript-template/actions/workflows/ci.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kt-npm-modules_npm-typescript-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kt-npm-modules_npm-typescript-template)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kt-npm-modules_npm-typescript-template&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kt-npm-modules_npm-typescript-template)
-[![License](https://img.shields.io/npm/l/@ktarmyshov/npm-typescript-template)](./LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/%40mirasen%2Freact-chessboard)](https://www.npmjs.com/package/@mirasen/react-chessboard)
+[![CI](https://github.com/mirasen-io/react-chessboard/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mirasen-io/react-chessboard/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mirasen-io_react-chessboard&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mirasen-io_react-chessboard)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mirasen-io_react-chessboard&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mirasen-io_react-chessboard)
+[![License](https://img.shields.io/npm/l/@mirasen/react-chessboard)](./LICENSE)
 
-# npm-typescript-template
+# @mirasen/react-chessboard
 
-Template repo for an NPM module in typescript
+A React chessboard component with built-in interaction, promotion, animation, and chess.js integration.
 
-- Version tracking with changeset
-- Dependabot updates & auto-generation of changesets
-- Format on save with eslint in vscode
-- Monthly auto-release, if only dependabot changes are included
-- Example for checking changes in subpackage folder since last successfull run in the context of `push` or `pull_request` events
+Start with a working chessboard, not a board primitive.
 
-# Check if subpackage test will run
+## Try it live
 
-Changes if this changes -
+These examples use the same Mirasen chessboard runtime that powers the React component.
 
-FOR PR TEST 3
+- [Play a chess.js game](https://mirasen.io/chessboard/examples/chessjs.html)
+- [Try the promotion flow](https://mirasen.io/chessboard/examples/promotion.html)
+- [Try the minimal example](https://mirasen.io/chessboard/examples/minimal.html)
+
+## Why this exists
+
+Most React chessboard components give you a board primitive and leave the real chess UX to your app:
+
+- click and drag behavior
+- legal target feedback
+- promotion flow
+- special move glue
+- animation
+- synchronization with a rules engine
+
+`@mirasen/react-chessboard` wraps `@mirasen/chessboard` in a small React component so React apps can start from a working chessboard instead.
+
+React owns lifecycle and props. Mirasen owns board rendering, input, interaction, animation, promotion, and extension behavior.
+
+## Installation
+
+```bash
+npm install @mirasen/react-chessboard
+```
+
+For chess.js integration:
+
+```bash
+npm install @mirasen/react-chessboard chess.js
+```
+
+React and React DOM are peer dependencies. The package supports React 18 and newer.
+
+## Usage
+
+### Minimal React component
+
+```tsx
+import { Chessboard } from '@mirasen/react-chessboard';
+
+export function App() {
+	return (
+		<div style={{ width: 420, height: 420 }}>
+			<Chessboard position={{ id: 'game-1', position: 'start' }} />
+		</div>
+	);
+}
+```
+
+The outer container needs a visible size. The board fills that container.
+
+User moves are disabled unless you provide `movability`. For a playable chess game, connect the component to a game/rules layer such as `chess.js`.
+
+### Connect to chess.js
+
+`@mirasen/react-chessboard` owns board interaction and UI move output.  
+`chess.js` owns legality and game state.
+
+The package re-exports the Mirasen chess.js adapter helpers:
+
+```tsx
+import {
+	Chessboard,
+	type BoardOrientation,
+	type MoveOutput,
+	type MovabilityInput
+} from '@mirasen/react-chessboard';
+import { toBoardMoveDestinations, toGameMove } from '@mirasen/react-chessboard/adapters/chessjs';
+import { Chess } from 'chess.js';
+import { useCallback, useMemo, useRef, useState } from 'react';
+
+type PositionRequest = {
+	id: number;
+	position: string;
+};
+
+export function App() {
+	const chessRef = useRef(new Chess());
+
+	const [position, setPosition] = useState<PositionRequest>({
+		id: 0,
+		position: chessRef.current.fen()
+	});
+	const [orientation, setOrientation] = useState<BoardOrientation>('white');
+	const [autoPromoteToQueen, setAutoPromoteToQueen] = useState(false);
+	const [lastMove, setLastMove] = useState<string | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	const syncPosition = useCallback(() => {
+		setPosition((current) => ({
+			id: current.id + 1,
+			position: chessRef.current.fen()
+		}));
+	}, []);
+
+	const movability = useMemo<MovabilityInput>(
+		() => ({
+			mode: 'strict',
+			destinations: (source) => {
+				const moves = chessRef.current.moves({
+					square: source,
+					verbose: true
+				});
+				const destinations = toBoardMoveDestinations(moves);
+
+				return destinations.length > 0 ? destinations : undefined;
+			}
+		}),
+		[position.position]
+	);
+
+	const onUIMove = useCallback(
+		(move: MoveOutput) => {
+			try {
+				chessRef.current.move(toGameMove(move));
+				setLastMove(`${move.from}-${move.to}`);
+				setError(null);
+				syncPosition();
+			} catch (cause) {
+				setError(cause instanceof Error ? cause.message : 'Illegal move');
+				syncPosition();
+			}
+		},
+		[syncPosition]
+	);
+
+	function resetGame() {
+		chessRef.current.reset();
+		setLastMove(null);
+		setError(null);
+		syncPosition();
+	}
+
+	function flipBoard() {
+		setOrientation((current) => (current === 'white' ? 'black' : 'white'));
+	}
+
+	return (
+		<main>
+			<div style={{ width: 420, height: 420 }}>
+				<Chessboard
+					position={position}
+					orientation={orientation}
+					movability={movability}
+					onUIMove={onUIMove}
+					autoPromoteToQueen={autoPromoteToQueen}
+				/>
+			</div>
+
+			<button type="button" onClick={resetGame}>
+				Reset
+			</button>
+			<button type="button" onClick={flipBoard}>
+				Flip board
+			</button>
+			<label>
+				<input
+					type="checkbox"
+					checked={autoPromoteToQueen}
+					onChange={(event) => setAutoPromoteToQueen(event.currentTarget.checked)}
+				/>
+				Auto-promote to queen
+			</label>
+
+			<p>FEN: {position.position}</p>
+			<p>Last move: {lastMove ?? 'none'}</p>
+			{error ? <p role="alert">{error}</p> : null}
+		</main>
+	);
+}
+```
+
+For a complete local smoke example, see [`examples/app`](./examples/app).
+
+## Request-based props
+
+The component intentionally uses request objects for board-changing commands.
+
+```tsx
+<Chessboard position={{ id: gameId, position: fen }} />
+```
+
+`position` is not a controlled prop that reapplies on every render. It is an id-based set-position request:
+
+- same `position.id` → ignored
+- new `position.id` → `board.setPosition(...)` is applied once
+
+This makes React rerenders safe and prevents repeated prop/effect synchronization from resetting board state or clearing visual feedback.
+
+### External moves
+
+Use `externalMove` for computer, remote, replay, or engine moves that should be applied to the board as moves rather than full-position resets.
+
+```tsx
+import { toBoardMove } from '@mirasen/react-chessboard/adapters/chessjs';
+
+const appliedMove = chess.move(randomMove);
+
+setExternalMove((current) => ({
+	id: (current?.id ?? 0) + 1,
+	move: toBoardMove(appliedMove)
+}));
+
+<Chessboard position={{ id: gameId, position: chess.fen() }} externalMove={externalMove} />;
+```
+
+`externalMove` is also id-based:
+
+- same `externalMove.id` → ignored
+- new `externalMove.id` → `board.move(...)` is applied once
+
+This prevents duplicate React renders from replaying the same move.
+
+## Props
+
+```ts
+import type { CSSProperties } from 'react';
+import type {
+	BoardOrientation,
+	MoveOutput,
+	MoveRequestInput,
+	MovabilityInput,
+	PositionInput
+} from '@mirasen/react-chessboard';
+
+type PositionRequest = {
+	id: string | number;
+	position: PositionInput;
+};
+
+type ExternalMoveRequest = {
+	id: string | number;
+	move: MoveRequestInput;
+};
+
+type ChessboardProps = {
+	position: PositionRequest;
+	externalMove?: ExternalMoveRequest;
+	orientation?: BoardOrientation;
+	movability?: MovabilityInput;
+	onUIMove?: (move: MoveOutput) => void;
+	autoPromoteToQueen?: boolean;
+	className?: string;
+	style?: CSSProperties;
+};
+```
+
+### `position`
+
+Id-based set-position request. Use a new `id` when you want the board to apply a new position.
+
+### `externalMove`
+
+Id-based move request for moves coming from outside the user interaction flow.
+
+### `orientation`
+
+Board orientation. Accepts the same color input as `@mirasen/chessboard`, such as `'white'` or `'black'`.
+
+### `movability`
+
+Controls user-initiated moves. Use strict movability with legal destinations when integrating with a rules engine.
+
+### `onUIMove`
+
+Called when the user completes a board move. Use this to update your game/rules layer.
+
+### `autoPromoteToQueen`
+
+When `true`, promotion automatically selects a queen. When omitted or `false`, the normal built-in promotion flow is used.
+
+### `className` and `style`
+
+Applied to the outer container only. They are for layout, not board theming.
+
+## chess.js adapter helpers
+
+The React package re-exports the core chess.js adapter helpers:
+
+```ts
+import {
+	toBoardMove,
+	toBoardMoveDestinations,
+	toGameMove,
+	type ChessJsMoveInput
+} from '@mirasen/react-chessboard/adapters/chessjs';
+```
+
+- `toGameMove` converts a board UI move into a move accepted by `chess.move(...)`.
+- `toBoardMove` converts a `chess.js` move result into a board move request.
+- `toBoardMoveDestinations` converts verbose legal `chess.js` moves into strict board destinations.
+
+This keeps the integration boundary explicit:
+
+- `chess.js` decides which moves are legal.
+- The React component displays and collects user moves.
+- Mirasen handles board interaction, target feedback, promotion UI, special-move board updates, and animation.
+
+## What you get out of the box
+
+The underlying Mirasen board provides the default first-party chessboard baseline:
+
+- SVG rendering
+- pointer-based click and drag interaction
+- selected-square feedback
+- active-target feedback
+- legal move hints
+- last-move feedback
+- promotion UI
+- optional auto-promotion
+- animation for board-state changes
+- mobile-friendly pointer behavior
+
+## Styling and customization
+
+The React component intentionally exposes a small high-level API and uses the default Mirasen board appearance.
+
+It does not expose color, square, piece, renderer, or extension customization props in v1.
+
+This is deliberate: the React package is the simple path for users who want a working chessboard quickly.
+
+For custom visuals, custom extensions, custom piece sets, or low-level runtime control, use `@mirasen/chessboard` directly from React.
+
+## Advanced: use the core package directly from React
+
+Power users can use the framework-agnostic core package directly:
+
+```tsx
+import { createBoard, type Chessboard as CoreChessboard } from '@mirasen/chessboard';
+import { useEffect, useRef } from 'react';
+
+export function CustomBoard() {
+	const containerRef = useRef<HTMLDivElement | null>(null);
+	const boardRef = useRef<CoreChessboard | null>(null);
+
+	useEffect(() => {
+		const element = containerRef.current;
+
+		if (!element) {
+			return;
+		}
+
+		const board = createBoard({
+			element
+			// extensions/config/custom visuals
+		});
+
+		boardRef.current = board;
+
+		return () => {
+			board.destroy();
+			boardRef.current = null;
+		};
+	}, []);
+
+	return <div ref={containerRef} style={{ width: 420, height: 420 }} />;
+}
+```
+
+Use this route when you need lower-level runtime access than the React component intentionally provides.
+
+## Local example app
+
+```bash
+cd examples/app
+npm install
+npm run dev
+```
+
+Production build:
+
+```bash
+cd examples/app
+npm run build
+```
+
+## Relationship to @mirasen/chessboard
+
+`@mirasen/react-chessboard` is a thin wrapper over `@mirasen/chessboard`.
+
+Use this package when you want a React component with a small high-level API.
+
+Use `@mirasen/chessboard` directly when you want the full framework-agnostic runtime and extension system.
+
+## Artwork
+
+The default board appearance uses the same Chessnut piece set as `@mirasen/chessboard`.
+
+- Author: Alexis Luengas — https://github.com/LexLuengas
+- Source: https://github.com/LexLuengas/chessnut-pieces
+- License: Apache License 2.0 — https://github.com/LexLuengas/chessnut-pieces/blob/master/LICENSE.txt
+
+For full attribution, see the core package artwork documentation in `@mirasen/chessboard`.
