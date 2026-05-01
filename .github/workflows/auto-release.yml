@@ -17,9 +17,10 @@ jobs:
   #   steps:
   #     - run: ${{ tojson(github) }}
   #       shell: cat {0}
+
   # prevents this action from running on forks
   auto-release:
-    if: github.repository == 'kt-npm-modules/npm-typescript-template'
+    if: github.repository == 'mirasen-io/react-chessboard'
     runs-on: ubuntu-latest
     steps:
       - uses: kt-workflows/actions/dependabot-auto-release@main

@@ -1,7 +1,7 @@
 name: CONTRIBUTION-UPDATE
 # Update the 'contribution' branch with the state of the 'main' branch
 # The branch 'contribution' is used for accepting contributions from the community
-# This is neccessary, because some of the actions workflows that need organization secrets are not available from external PRs
+# This is necessary, because some of the actions workflows that need organization secrets are not available from external PRs
 # So we first accept the PRs to the 'contribution' branch and then we merge them via PRs to the 'main' branch, so all secrets are available and all jobs can run
 
 on:
@@ -20,7 +20,7 @@ concurrency:
 jobs:
   detect-pr-source:
     # prevents this action from running on forks
-    if: github.repository == 'kt-npm-modules/npm-typescript-template'
+    if: github.repository == 'mirasen-io/react-chessboard'
     runs-on: ubuntu-latest
     outputs:
       skip: ${{ steps.decide.outputs.skip }}
@@ -58,7 +58,7 @@ jobs:
     needs: detect-pr-source
     # prevents this action from running on forks
     if: |
-      github.repository == 'kt-npm-modules/npm-typescript-template' &&
+      github.repository == 'mirasen-io/react-chessboard' &&
       needs.detect-pr-source.outputs.skip != 'true'
     runs-on: ubuntu-latest
     steps:

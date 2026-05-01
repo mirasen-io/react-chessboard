@@ -136,24 +136,6 @@ jobs:
           # Set the cache reset to use
           echo "cache-reset=${{ vars.CACHE_RESET || env.DEFAULT_CACHE_RESET }}" >> "$GITHUB_OUTPUT"
 
-  ci-subpackage:
-    needs: config
-    runs-on: ubuntu-latest
-    steps:
-      - id: check-changes
-        uses: kt-workflows/actions/has-changes-since-last-success@main
-        with:
-          paths: |
-            subpackage
-            .githooks
-
-      - uses: actions/checkout@v6
-        if: steps.check-changes.outputs.has-changes == 'true'
-
-      - run: subpackage/test.sh
-        shell: bash
-        if: steps.check-changes.outputs.has-changes == 'true'
-
   check:
     needs: config
     runs-on: ubuntu-latest
@@ -227,7 +209,6 @@ jobs:
   required-main:
     name: required-main (${{ github.event_name }})
     needs:
-      - ci-subpackage
       - check
       - test
       - sonar
@@ -241,7 +222,6 @@ jobs:
   required-contribution:
     name: required-contribution (${{ github.event_name }})
     needs:
-      - ci-subpackage
       - check
       - test
     runs-on: ubuntu-latest
