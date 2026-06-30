@@ -1,5 +1,35 @@
 # @mirasen/react-chessboard
 
+## 1.0.2
+
+### Patch Changes
+
+- bffad2d: dependabot: directory '/', update @mirasen/chessboard
+- bffad2d: dependabot: directory '/', update @vitest/coverage-istanbul
+- bffad2d: dependabot: directory '/', update eslint
+- bffad2d: dependabot: directory '/', update typescript-eslint
+- bffad2d: dependabot: directory '/', update vitest
+- 53d1362: dependabot: directory '/', update @types/node
+- 01672dd: dependabot: directory '/', update typescript-eslint
+- da2523f: dependabot: directory '/', update prettier
+- a2453df: dependabot: directory '/', update @types/node
+- bb08fe3: dependabot: directory '/', update eslint
+- 46afc66: dependabot: directory '/', update @vitest/coverage-istanbul
+- 46afc66: dependabot: directory '/', update vitest
+- 1e8f79b: dependabot: directory '/', update typescript-eslint
+- 43b7e05: dependabot: directory '/', update @types/node
+- 1c4356b: dependabot: directory '/', update globals
+- 1c4356b: dependabot: directory '/', update typescript-eslint
+- bccd72f: dependabot: directory '/', update @types/node
+- a50bae8: dependabot: directory '/', update @mirasen/chessboard
+- a50bae8: dependabot: directory '/', update prettier
+- 13b8f0d: dependabot: directory '/', update eslint
+- 13b8f0d: dependabot: directory '/', update prettier
+- 0da601f: dependabot: directory '/', update prettier
+- e3fafbc: dependabot: directory '/', update prettier
+- 6c0701e: dependabot: directory '/', update typescript-eslint
+- 51ad26b: dependabot: directory '/', update prettier
+
 ## 1.0.1
 
 ### Patch Changes
