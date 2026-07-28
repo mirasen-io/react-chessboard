@@ -80,7 +80,7 @@
 		"eslint": "^10.0.2",
 		"eslint-config-prettier": "^10.1.2",
 		"globals": "^17.4.0",
-		"jsdom": "^29.1.1",
+		"jsdom": "^30.0.0",
 		"prettier": "^3.5.3",
 		"publint": "^0.3.11",
 		"react": "^18.3.1",
