@@ -1,5 +1,27 @@
 # @mirasen/react-chessboard
 
+## 1.0.3
+
+### Patch Changes
+
+- 8d3e6e8: dependabot: directory '/', update @types/node
+- c253682: dependabot: directory '/', update @vitest/coverage-istanbul
+- c253682: dependabot: directory '/', update vitest
+- 9d21c86: dependabot: directory '/', update typescript-eslint
+- 4fccb91: dependabot: directory '/', update @types/node
+- 9687055: dependabot: directory '/', update prettier
+- c8b9790: dependabot: directory '/', update eslint
+- e8350e0: dependabot: directory '/', update typescript-eslint
+- f58e882: dependabot: directory '/', update @changesets/cli
+- 56ee8d5: dependabot: directory '/', update typescript-eslint
+- aff046b: dependabot: directory '/', update prettier
+- 33fcf8f: dependabot: directory '/', update publint
+- 819d6a6: dependabot: directory '/', update eslint
+- 337792b: dependabot: directory '/', update globals
+- 434d635: dependabot: directory '/', update @types/node
+- f7ed029: dependabot: directory '/', update jsdom
+- 7a453ee: dependabot: directory '/', update jsdom
+
 ## 1.0.2
 
 ### Patch Changes
