@@ -33,6 +33,14 @@ Most React chessboard components give you a board primitive and leave the real c
 
 React owns lifecycle and props. Mirasen owns board rendering, input, interaction, animation, promotion, and extension behavior.
 
+## Real-world migration feedback
+
+After initially using `react-chessboard` and implementing click-to-move and move highlighting in application code, [TheUnemployedHobo](https://github.com/TheUnemployedHobo) explained why he migrated to Mirasen:
+
+> "But the code ended up getting so messy that I didn't even want to look at it anymore. It was painful to read. That's when I decided I needed a library that handled those things properly out of the box, and that's how I ended up switching to yours."
+
+— Author of [multiplayer-chess](https://github.com/TheUnemployedHobo/multiplayer-chess) · [Full discussion](https://github.com/TheUnemployedHobo/multiplayer-chess/issues/1#issuecomment-5356049391)
+
 ## Installation
 
 ```bash
