@@ -5,7 +5,7 @@ export default defineConfig({
 		environment: 'jsdom',
 		coverage: {
 			reportsDirectory: './coverage-test',
-			provider: 'istanbul',
+			provider: 'v8',
 			include: ['src/**/*.{js,ts,tsx}'],
 			reporter: ['text', 'html', 'clover', 'json', 'lcov']
 		}
