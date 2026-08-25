@@ -136,7 +136,7 @@ dist
 .pnp.*
 
 coverage*
-!.changeset/coverage*
+!.changeset/coverage*.md
 artifacts
 
 .claude/settings.local.json
