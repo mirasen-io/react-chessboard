@@ -1,7 +1,9 @@
 import type { MoveOutput } from '@mirasen/chessboard';
 import { cleanup, render } from '@testing-library/react';
+import { createRef } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Chessboard } from '../src/Chessboard.js';
+import type { ChessboardHandle } from '../src/types.js';
 
 type OnUIMoveHandler = (move: MoveOutput) => void;
 
@@ -17,6 +19,9 @@ const mockBoard = vi.hoisted(() => ({
 		},
 		autoPromote: {
 			toQueen: false
+		},
+		check: {
+			square: null as string | null
 		}
 	}
 }));
@@ -31,6 +36,7 @@ describe('Chessboard', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockBoard.extensions.autoPromote.toQueen = false;
+		mockBoard.extensions.check.square = null;
 	});
 
 	afterEach(() => {
@@ -195,5 +201,68 @@ describe('Chessboard', () => {
 		expect(div.className).toBe('my-board');
 		expect(div.style.width).toBe('400px');
 		expect(div.style.height).toBe('400px');
+	});
+
+	it('checkSquare prop sets extensions.check.square', () => {
+		render(<Chessboard position={{ id: 1, position: 'start' }} checkSquare="e1" />);
+
+		expect(mockBoard.extensions.check.square).toBe('e1');
+	});
+
+	it('checkSquare={null} clears extensions.check.square', () => {
+		const { rerender } = render(
+			<Chessboard position={{ id: 1, position: 'start' }} checkSquare="e1" />
+		);
+
+		rerender(<Chessboard position={{ id: 1, position: 'start' }} checkSquare={null} />);
+
+		expect(mockBoard.extensions.check.square).toBeNull();
+	});
+
+	it('checkSquare same value on re-render does not re-assign', () => {
+		const { rerender } = render(
+			<Chessboard position={{ id: 1, position: 'start' }} checkSquare="e1" />
+		);
+
+		const assignCount = { n: 0 };
+		const original = mockBoard.extensions.check.square;
+		Object.defineProperty(mockBoard.extensions.check, 'square', {
+			get: () => original,
+			set: () => {
+				assignCount.n++;
+			},
+			configurable: true
+		});
+
+		rerender(<Chessboard position={{ id: 1, position: 'start' }} checkSquare="e1" />);
+
+		expect(assignCount.n).toBe(0);
+
+		Object.defineProperty(mockBoard.extensions.check, 'square', {
+			value: null,
+			writable: true,
+			configurable: true
+		});
+	});
+
+	it('ref is null before mount', () => {
+		const ref = createRef<ChessboardHandle>();
+		expect(ref.current).toBeNull();
+	});
+
+	it('ref.current equals the mock board instance after mount', () => {
+		const ref = createRef<ChessboardHandle>();
+		render(<Chessboard ref={ref} position={{ id: 1, position: 'start' }} />);
+
+		expect(ref.current).toBe(mockBoard);
+	});
+
+	it('ref.current is null after unmount', () => {
+		const ref = createRef<ChessboardHandle>();
+		const { unmount } = render(<Chessboard ref={ref} position={{ id: 1, position: 'start' }} />);
+
+		unmount();
+
+		expect(ref.current).toBeNull();
 	});
 });

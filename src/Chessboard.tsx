@@ -1,17 +1,21 @@
 import { createBoard, type Chessboard as CoreChessboard } from '@mirasen/chessboard';
-import { useEffect, useRef } from 'react';
-import type { ChessboardProps } from './types.js';
+import { forwardRef, useEffect, useRef } from 'react';
+import type { ChessboardHandle, ChessboardProps } from './types.js';
 
-export function Chessboard({
-	position,
-	externalMove,
-	orientation,
-	movability,
-	onUIMove,
-	autoPromoteToQueen,
-	className,
-	style
-}: ChessboardProps) {
+export const Chessboard = forwardRef<ChessboardHandle, ChessboardProps>(function Chessboard(
+	{
+		position,
+		externalMove,
+		orientation,
+		movability,
+		onUIMove,
+		autoPromoteToQueen,
+		checkSquare,
+		className,
+		style
+	}: ChessboardProps,
+	ref
+) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const boardRef = useRef<CoreChessboard | null>(null);
 	const onUIMoveRef = useRef(onUIMove);
@@ -28,6 +32,9 @@ export function Chessboard({
 		const board = createBoard({ element: containerRef.current });
 		boardRef.current = board;
 
+		if (typeof ref === 'function') ref(board);
+		else if (ref) ref.current = board;
+
 		board.extensions.events.setOnUIMove((move) => {
 			onUIMoveRef.current?.(move);
 		});
@@ -36,6 +43,8 @@ export function Chessboard({
 			board.extensions.events.setOnUIMove(null);
 			board.destroy();
 			boardRef.current = null;
+			if (typeof ref === 'function') ref(null);
+			else if (ref) ref.current = null;
 		};
 	}, []);
 
@@ -76,5 +85,11 @@ export function Chessboard({
 		boardRef.current.extensions.autoPromote.toQueen = autoPromoteToQueen ?? false;
 	}, [autoPromoteToQueen]);
 
+	// checkSquare sync
+	useEffect(() => {
+		if (!boardRef.current) return;
+		boardRef.current.extensions.check.square = checkSquare ?? null;
+	}, [checkSquare]);
+
 	return <div ref={containerRef} className={className} style={style} />;
-}
+});

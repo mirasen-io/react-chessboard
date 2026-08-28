@@ -1,6 +1,7 @@
 export { Chessboard } from './Chessboard.js';
 export type {
 	BoardOrientation,
+	ChessboardHandle,
 	ChessboardProps,
 	ExternalMoveRequest,
 	PositionRequest
@@ -12,5 +13,6 @@ export type {
 	MovabilityInput,
 	MoveOutput,
 	MoveRequestInput,
-	PositionInput
+	PositionInput,
+	SquareString
 } from '@mirasen/chessboard';

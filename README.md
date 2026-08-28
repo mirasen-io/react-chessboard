@@ -14,9 +14,10 @@ Start with a working chessboard, not a board primitive.
 
 These examples use the same Mirasen chessboard runtime that powers the React component.
 
-- [Play a chess.js game](https://mirasen.io/chessboard/examples/chessjs.html)
-- [Try the promotion flow](https://mirasen.io/chessboard/examples/promotion.html)
-- [Try the minimal example](https://mirasen.io/chessboard/examples/minimal.html)
+- [Play a chess.js game](https://mirasen.io/chessboard/examples/chessjs)
+- [Watch 12 live boards](https://mirasen.io/chessboard/examples/live-games-grid)
+- [Try the promotion flow](https://mirasen.io/chessboard/examples/promotion)
+- [Try the minimal example](https://mirasen.io/chessboard/examples/minimal)
 
 ## Why this exists
 
@@ -244,7 +245,8 @@ import type {
 	MoveOutput,
 	MoveRequestInput,
 	MovabilityInput,
-	PositionInput
+	PositionInput,
+	SquareString
 } from '@mirasen/react-chessboard';
 
 type PositionRequest = {
@@ -264,6 +266,7 @@ type ChessboardProps = {
 	movability?: MovabilityInput;
 	onUIMove?: (move: MoveOutput) => void;
 	autoPromoteToQueen?: boolean;
+	checkSquare?: SquareString | null;
 	className?: string;
 	style?: CSSProperties;
 };
@@ -293,6 +296,14 @@ Called when the user completes a board move. Use this to update your game/rules 
 
 When `true`, promotion automatically selects a queen. When omitted or `false`, the normal built-in promotion flow is used.
 
+### `checkSquare`
+
+Highlights the king's square when in check. Pass the king's square string (e.g. `'e1'`) to show a red glow; pass `null` or omit to clear it. The chessboard does not detect check itself — your rules layer (e.g. `chess.js`) is responsible for determining when and which square to highlight.
+
+```tsx
+<Chessboard checkSquare={chess.isCheck() ? kingSquare : null} ... />
+```
+
 ### `className` and `style`
 
 Applied to the outer container only. They are for layout, not board theming.
@@ -320,6 +331,36 @@ This keeps the integration boundary explicit:
 - The React component displays and collects user moves.
 - Mirasen handles board interaction, target feedback, promotion UI, special-move board updates, and animation.
 
+## Board handle (ref)
+
+`Chessboard` forwards a `ChessboardHandle` via `ref`. The handle is the full public surface of the underlying `@mirasen/chessboard` board instance — all extensions, all runtime methods, typed directly from the core package.
+
+```tsx
+import { Chessboard, type ChessboardHandle } from '@mirasen/react-chessboard';
+import { useEffect, useRef } from 'react';
+
+const boardRef = useRef<ChessboardHandle>(null);
+
+// once on mount — draw a circle via the annotations extension
+useEffect(() => {
+  boardRef.current?.extensions.annotations.circle('e4', { color: 'green' });
+}, []);
+
+<Chessboard ref={boardRef} position={...} />
+```
+
+The ref gives access to everything the core board exposes: `extensions.*`, `move(...)`, `setPosition(...)`, `setOrientation(...)`, `select(...)`, `getSnapshot()`, and more. When the core package adds a new extension, it is immediately accessible via `ref.current.extensions.<id>` — no wrapper update needed.
+
+**When to use ref vs props**
+
+Convenience props (`autoPromoteToQueen`, `checkSquare`, `onUIMove`) cover the most common declarative settings. Use the ref when:
+
+- you need an extension that has no convenience prop (e.g. `annotations`, `renderer` config)
+- you need to call an imperative method (`annotations.arrow(...)`, `select(...)`)
+- you want to read board state (`getSnapshot()`, `extensions.annotations.getCircles()`)
+
+**One channel per setting.** If a convenience prop already covers a setting, do not also write to the same extension property via ref in the same component — they write to the same underlying state and the last write wins.
+
 ## What you get out of the box
 
 The underlying Mirasen board provides the default first-party chessboard baseline:
@@ -330,6 +371,7 @@ The underlying Mirasen board provides the default first-party chessboard baselin
 - active-target feedback
 - legal move hints
 - last-move feedback
+- check square highlight
 - promotion UI
 - optional auto-promotion
 - animation for board-state changes
