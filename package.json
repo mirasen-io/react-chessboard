@@ -57,7 +57,7 @@
 		"LICENSE"
 	],
 	"dependencies": {
-		"@mirasen/chessboard": "^1.1.3"
+		"@mirasen/chessboard": "^1.4.0"
 	},
 	"peerDependencies": {
 		"react": ">=18",

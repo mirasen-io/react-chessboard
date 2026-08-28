@@ -1,11 +1,15 @@
 import type {
+	Chessboard as CoreChessboard,
 	ColorInput,
 	MovabilityInput,
 	MoveOutput,
 	MoveRequestInput,
-	PositionInput
+	PositionInput,
+	SquareString
 } from '@mirasen/chessboard';
 import type { CSSProperties } from 'react';
+
+export type ChessboardHandle = CoreChessboard;
 
 export type BoardOrientation = ColorInput;
 
@@ -26,6 +30,7 @@ export type ChessboardProps = {
 	movability?: MovabilityInput;
 	onUIMove?: (move: MoveOutput) => void;
 	autoPromoteToQueen?: boolean;
+	checkSquare?: SquareString | null;
 	className?: string;
 	style?: CSSProperties;
 };
