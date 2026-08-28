@@ -2,6 +2,7 @@ import {
 	Chessboard,
 	MovabilityInput,
 	type BoardOrientation,
+	type ChessboardHandle,
 	type MoveOutput,
 	type MoveRequestInput,
 	type SquareString
@@ -12,7 +13,7 @@ import {
 	toGameMove
 } from '@mirasen/react-chessboard/adapters/chessjs';
 import { Chess } from 'chess.js';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const COMPUTER_DELAY = 800;
 
@@ -33,6 +34,7 @@ function getCheckSquare(chess: Chess): SquareString | null {
 
 export function App() {
 	const gameRef = useRef(new Chess());
+	const boardRef = useRef<ChessboardHandle>(null);
 	const gameVersionRef = useRef(0);
 	const computerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -45,6 +47,10 @@ export function App() {
 	const [status, setStatus] = useState('Your move');
 	const [lastMove, setLastMove] = useState<string | null>(null);
 	const [checkSquare, setCheckSquare] = useState<SquareString | null>(null);
+
+	useEffect(() => {
+		boardRef.current?.extensions.annotations.circle('e2', { color: 'green' });
+	}, []);
 
 	const playerColor = 'w';
 
@@ -146,6 +152,7 @@ export function App() {
 
 			<div className="board-container">
 				<Chessboard
+					ref={boardRef}
 					position={{ id: positionId, position: fen }}
 					externalMove={
 						externalMove && externalMoveId > 0
