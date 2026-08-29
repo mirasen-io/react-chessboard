@@ -265,4 +265,66 @@ describe('Chessboard', () => {
 
 		expect(ref.current).toBeNull();
 	});
+
+	it('replacing object ref: old ref is cleared, new ref receives the same board instance', () => {
+		const refA = createRef<ChessboardHandle>();
+		const refB = createRef<ChessboardHandle>();
+
+		const { rerender } = render(<Chessboard ref={refA} position={{ id: 1, position: 'start' }} />);
+
+		const boardInstance = refA.current;
+		expect(boardInstance).toBe(mockBoard);
+
+		rerender(<Chessboard ref={refB} position={{ id: 1, position: 'start' }} />);
+
+		expect(refA.current).toBeNull();
+		expect(refB.current).toBe(boardInstance);
+		expect(mockBoard.destroy).not.toHaveBeenCalled();
+	});
+
+	it('replacing object ref: new ref is null after unmount', () => {
+		const refA = createRef<ChessboardHandle>();
+		const refB = createRef<ChessboardHandle>();
+
+		const { rerender, unmount } = render(
+			<Chessboard ref={refA} position={{ id: 1, position: 'start' }} />
+		);
+		rerender(<Chessboard ref={refB} position={{ id: 1, position: 'start' }} />);
+
+		unmount();
+
+		expect(refB.current).toBeNull();
+	});
+
+	it('replacing callback ref: old callback receives null, new callback receives the same board', () => {
+		const callbackA = vi.fn();
+		const callbackB = vi.fn();
+
+		const { rerender } = render(
+			<Chessboard ref={callbackA} position={{ id: 1, position: 'start' }} />
+		);
+
+		expect(callbackA).toHaveBeenCalledTimes(1);
+		expect(callbackA).toHaveBeenCalledWith(mockBoard);
+
+		rerender(<Chessboard ref={callbackB} position={{ id: 1, position: 'start' }} />);
+
+		expect(callbackA).toHaveBeenCalledWith(null);
+		expect(callbackB).toHaveBeenCalledWith(mockBoard);
+		expect(mockBoard.destroy).not.toHaveBeenCalled();
+	});
+
+	it('replacing callback ref: new callback receives null after unmount', () => {
+		const callbackA = vi.fn();
+		const callbackB = vi.fn();
+
+		const { rerender, unmount } = render(
+			<Chessboard ref={callbackA} position={{ id: 1, position: 'start' }} />
+		);
+		rerender(<Chessboard ref={callbackB} position={{ id: 1, position: 'start' }} />);
+
+		unmount();
+
+		expect(callbackB).toHaveBeenLastCalledWith(null);
+	});
 });

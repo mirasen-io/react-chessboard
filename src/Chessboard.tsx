@@ -32,9 +32,6 @@ export const Chessboard = forwardRef<ChessboardHandle, ChessboardProps>(function
 		const board = createBoard({ element: containerRef.current });
 		boardRef.current = board;
 
-		if (typeof ref === 'function') ref(board);
-		else if (ref) ref.current = board;
-
 		board.extensions.events.setOnUIMove((move) => {
 			onUIMoveRef.current?.(move);
 		});
@@ -43,10 +40,26 @@ export const Chessboard = forwardRef<ChessboardHandle, ChessboardProps>(function
 			board.extensions.events.setOnUIMove(null);
 			board.destroy();
 			boardRef.current = null;
-			if (typeof ref === 'function') ref(null);
-			else if (ref) ref.current = null;
 		};
 	}, []);
+
+	// Forward external ref to the same board instance
+	useEffect(() => {
+		const board = boardRef.current;
+		if (!board) return;
+
+		if (typeof ref === 'function') {
+			ref(board);
+			return () => ref(null);
+		}
+
+		if (ref) {
+			ref.current = board;
+			return () => {
+				ref.current = null;
+			};
+		}
+	}, [ref]);
 
 	// Position sync
 	useEffect(() => {
