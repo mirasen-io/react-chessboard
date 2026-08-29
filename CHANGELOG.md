@@ -1,5 +1,37 @@
 # @mirasen/react-chessboard
 
+## 1.1.0
+
+### Minor Changes
+
+- 26ef306: Expose board handle via ref and add `checkSquare` convenience prop.
+
+  - `Chessboard` is now a `forwardRef` component. `ref.current` resolves to a `ChessboardHandle` — the full public surface of the underlying `@mirasen/chessboard` board instance, including all extensions and runtime methods. Future core extensions are accessible via `ref.current.extensions.<id>` without any wrapper changes.
+  - New `checkSquare` prop (`SquareString | null`) — declaratively highlights the king's square when in check, delegating to the core `check` extension.
+  - `ChessboardHandle` and `SquareString` are now exported from the package index.
+  - Bumped `@mirasen/chessboard` minimum to `^1.4.0` (adds the `check` extension).
+
+### Patch Changes
+
+- ac62bcf: chore: switch coverage provider from istanbul to v8
+- 0e001f0: dependabot: directory '/', update @mirasen/chessboard
+- 68df85a: dependabot: directory '/', update globals
+- 388cebc: dependabot: directory '/', update typescript-eslint
+- 68df85a: dependabot: directory '/', update publint
+- 78940bb: dependabot: directory '/', update @types/node
+- 68df85a: dependabot: directory '/', update eslint
+- 388cebc: dependabot: directory '/', update typescript-eslint
+- 68df85a: dependabot: directory '/', update globals
+- 916cc63: dependabot: directory '/', update @changesets/cli
+- 2bbe950: dependabot: directory '/', update @vitest/coverage-istanbul
+- 68df85a: dependabot: directory '/', update vitest
+- 916cc63: dependabot: directory '/', update @changesets/cli
+- 68df85a: dependabot: directory '/', update publint
+- 68df85a: dependabot: directory '/', update eslint
+- 78940bb: dependabot: directory '/', update @types/node
+- 68df85a: dependabot: directory '/', update eslint
+- 388cebc: dependabot: directory '/', update typescript-eslint
+
 ## 1.0.3
 
 ### Patch Changes
