@@ -36,7 +36,6 @@
 		}
 	},
 	"scripts": {
-		"postinstall": "./scripts/npm-link.sh",
 		"build": "rimraf ./dist && tsc --project tsconfig.json && npm run prepack",
 		"build:release": "rimraf ./dist && tsc --project tsconfig-release.json && npm run prepack",
 		"prepack": "publint",
