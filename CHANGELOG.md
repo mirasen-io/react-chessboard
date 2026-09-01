@@ -1,5 +1,12 @@
 # @mirasen/react-chessboard
 
+## 1.1.1
+
+### Patch Changes
+
+- 2297261: dependabot: directory '/', update @testing-library/react
+- 2297261: dependabot: directory '/', update @types/node
+
 ## 1.1.0
 
 ### Minor Changes
