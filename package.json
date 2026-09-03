@@ -56,12 +56,12 @@
 		"LICENSE"
 	],
 	"dependencies": {
-		"@mirasen/chessboard": "^1.4.0"
+		"@mirasen/chessboard": "^1.5.0"
 	},
 	"peerDependencies": {
+		"chess.js": "^1.4.0",
 		"react": ">=18",
-		"react-dom": ">=18",
-		"chess.js": "^1.4.0"
+		"react-dom": ">=18"
 	},
 	"peerDependenciesMeta": {
 		"chess.js": {

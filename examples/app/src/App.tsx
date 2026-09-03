@@ -3,9 +3,9 @@ import {
 	MovabilityInput,
 	type BoardOrientation,
 	type ChessboardHandle,
+	type ColorInput,
 	type MoveOutput,
-	type MoveRequestInput,
-	type SquareString
+	type MoveRequestInput
 } from '@mirasen/react-chessboard';
 import {
 	toBoardMove,
@@ -16,21 +16,6 @@ import { Chess } from 'chess.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const COMPUTER_DELAY = 800;
-
-function getCheckSquare(chess: Chess): SquareString | null {
-	if (!chess.isCheck()) return null;
-	const turn = chess.turn();
-	const board = chess.board();
-	for (let rank = 0; rank < 8; rank++) {
-		for (let file = 0; file < 8; file++) {
-			const piece = board[rank][file];
-			if (piece?.type === 'k' && piece.color === turn) {
-				return `${String.fromCharCode(97 + file)}${8 - rank}` as SquareString;
-			}
-		}
-	}
-	return null;
-}
 
 export function App() {
 	const gameRef = useRef(new Chess());
@@ -46,7 +31,10 @@ export function App() {
 	const [autoPromote, setAutoPromote] = useState(true);
 	const [status, setStatus] = useState('Your move');
 	const [lastMove, setLastMove] = useState<string | null>(null);
-	const [checkSquare, setCheckSquare] = useState<SquareString | null>(null);
+
+	const checkSquare: ColorInput | null = gameRef.current.isCheck()
+		? (gameRef.current.turn() as ColorInput)
+		: null;
 
 	useEffect(() => {
 		boardRef.current?.extensions.annotations.circle('e2', { color: 'green' });
@@ -81,7 +69,6 @@ export function App() {
 		setFen(chess.fen());
 		setStatus(getStatus());
 		setLastMove(`Computer: ${appliedMove.from}→${appliedMove.to}`);
-		setCheckSquare(getCheckSquare(chess));
 	}
 
 	function scheduleComputerMove() {
@@ -115,7 +102,6 @@ export function App() {
 			setPositionId((id) => id + 1);
 			setLastMove(`You: ${move.from}→${move.to}${move.promotedTo ? `=${move.promotedTo}` : ''}`);
 			setStatus(getStatus());
-			setCheckSquare(getCheckSquare(chess));
 
 			if (!chess.isGameOver()) {
 				scheduleComputerMove();
@@ -138,7 +124,6 @@ export function App() {
 		setExternalMove(null);
 		setLastMove(null);
 		setStatus('Your move');
-		setCheckSquare(null);
 	};
 
 	const handleFlip = () => {

@@ -298,10 +298,25 @@ When `true`, promotion automatically selects a queen. When omitted or `false`, t
 
 ### `checkSquare`
 
-Highlights the king's square when in check. Pass the king's square string (e.g. `'e1'`) to show a red glow; pass `null` or omit to clear it. The chessboard does not detect check itself — your rules layer (e.g. `chess.js`) is responsible for determining when and which square to highlight.
+Type: `SquareString | ColorInput | null`
+
+Highlights the king's square when in check with a red radial glow. Pass `null` or omit to remove the highlight. The chessboard does not detect check itself — your rules layer (e.g. `chess.js`) is responsible for determining when to apply it.
+
+Two forms are accepted:
+
+**Color shorthand** — pass the side to move (`'w'`/`'b'` or `'white'`/`'black'`); the extension auto-locates the king on the board. Recommended when integrating with a rules engine like chess.js:
 
 ```tsx
-<Chessboard checkSquare={chess.isCheck() ? kingSquare : null} ... />
+<Chessboard
+  checkSquare={chess.isCheck() ? chess.turn() : null}
+  ...
+/>
+```
+
+**Explicit square** — pass the king's square string directly if you already know it:
+
+```tsx
+<Chessboard checkSquare={chess.isCheck() ? 'e1' : null} ... />
 ```
 
 ### `className` and `style`

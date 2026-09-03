@@ -1,6 +1,6 @@
 import type {
-	Chessboard as CoreChessboard,
 	ColorInput,
+	Chessboard as CoreChessboard,
 	MovabilityInput,
 	MoveOutput,
 	MoveRequestInput,
@@ -30,7 +30,7 @@ export type ChessboardProps = {
 	movability?: MovabilityInput;
 	onUIMove?: (move: MoveOutput) => void;
 	autoPromoteToQueen?: boolean;
-	checkSquare?: SquareString | null;
+	checkSquare?: SquareString | ColorInput | null;
 	className?: string;
 	style?: CSSProperties;
 };

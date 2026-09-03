@@ -1,8 +1,4 @@
-## Purpose
-
-Provides a declarative convenience prop for highlighting the king's square when in check, delegating to the core `check` extension.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: checkSquare prop synchronises the check extension
 
@@ -33,14 +29,7 @@ The `Chessboard` component SHALL accept a `checkSquare` prop of type `SquareStri
 - **WHEN** `checkSquare` is not provided (undefined)
 - **THEN** no check highlight SHALL be rendered
 
-### Requirement: checkSquare prop follows the autoPromoteToQueen synchronisation pattern
-
-`checkSquare` SHALL be synchronised via a `useEffect` with `checkSquare` in its dependency array, mirroring the pattern used by `autoPromoteToQueen`.
-
-#### Scenario: re-render with same value does not re-apply the setting
-
-- **WHEN** a component re-renders with the same `checkSquare` value
-- **THEN** the synchronisation effect SHALL NOT fire (React dependency array prevents it)
+## MODIFIED Requirements
 
 ### Requirement: checkSquare type is exported
 
