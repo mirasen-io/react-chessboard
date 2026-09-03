@@ -5,11 +5,13 @@ See proposal.md — Why. The core `@mirasen/chessboard` check extension already 
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Widen `checkSquare` prop type to `SquareString | ColorInput | null`
 - Update the example to use the color shorthand (remove manual king-scan)
 - Update README to document the color shorthand form
 
 **Non-Goals:**
+
 - Changes to the synchronisation effect in `Chessboard.tsx` (no logic change needed)
 - Adding auto-check detection to the component (caller responsibility by design)
 
