@@ -1,5 +1,11 @@
 # @mirasen/react-chessboard
 
+## 1.2.0
+
+### Minor Changes
+
+- 8068804: Widen `checkSquare` prop type to accept `ColorInput` (e.g. `'w'`, `'white'`) in addition to `SquareString | null`, delegating king-location to the core check extension. Updates minimum `@mirasen/chessboard` peer to `^1.5.0`.
+
 ## 1.1.1
 
 ### Patch Changes
