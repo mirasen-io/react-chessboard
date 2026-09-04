@@ -11,6 +11,7 @@ updates:
       interval: 'daily'
       time: '03:47'
       timezone: 'Europe/Berlin'
+    versioning-strategy: increase
 
     ignore:
       - dependency-name: 'npm'
