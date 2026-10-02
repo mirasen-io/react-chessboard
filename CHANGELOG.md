@@ -1,5 +1,11 @@
 # @mirasen/react-chessboard
 
+## 1.2.2
+
+### Patch Changes
+
+- cdffe21: dependabot: dependency updates for PR #102
+
 ## 1.2.1
 
 ### Patch Changes
