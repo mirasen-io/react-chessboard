@@ -1,5 +1,26 @@
 # @mirasen/react-chessboard
 
+## 2.0.0
+
+### Major Changes
+
+- f146d13: Require React 19 or newer. React 18 is no longer supported.
+
+### Patch Changes
+
+- cdffe21: dependabot: dependency updates for PR #102
+- 5cf4c2b: dependabot: dependency updates for PR #104
+- 4b616c5: dependabot: dependency updates for PR #105
+- 95d438c: dependabot: dependency updates for PR #106
+- 7fe333f: dependabot: dependency updates for PR #108
+- 0921e88: dependabot: dependency updates for PR #109
+- ab1c979: dependabot: dependency updates for PR #112
+- 6c3d801: dependabot: dependency updates for PR #113
+- e576c26: dependabot: dependency updates for PR #114
+- 9e3b7f6: dependabot: dependency updates for PR #115
+- bd78bfa: dependabot: dependency updates for PR #116
+- 973252e: dependabot: dependency updates for PR #117
+
 ## 1.2.1
 
 ### Patch Changes
