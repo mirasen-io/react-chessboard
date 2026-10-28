@@ -56,7 +56,7 @@
 		"LICENSE"
 	],
 	"dependencies": {
-		"@mirasen/chessboard": "^1.5.1"
+		"@mirasen/chessboard": "^1.5.2"
 	},
 	"peerDependencies": {
 		"chess.js": "^1.4.0",
