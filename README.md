@@ -14,10 +14,10 @@ Start with a working chessboard, not a board primitive.
 
 These examples use the same mirasen chessboard runtime that powers the React component.
 
-- [Play a chess.js game](https://chessboard.k-tarmyshov.workers.dev/chessboard/examples/chessjs)
-- [Watch 12 live boards](https://chessboard.k-tarmyshov.workers.dev/chessboard/examples/live-games-grid)
-- [Try the promotion flow](https://chessboard.k-tarmyshov.workers.dev/chessboard/examples/promotion)
-- [Try the minimal example](https://chessboard.k-tarmyshov.workers.dev/chessboard/examples/minimal)
+- [Play a chess.js game](https://mirasen.k-tarmyshov.workers.dev/chessboard/examples/chessjs)
+- [Watch 12 live boards](https://mirasen.k-tarmyshov.workers.dev/chessboard/examples/live-games-grid)
+- [Try the promotion flow](https://mirasen.k-tarmyshov.workers.dev/chessboard/examples/promotion)
+- [Try the minimal example](https://mirasen.k-tarmyshov.workers.dev/chessboard/examples/minimal)
 
 ## Why this exists
 
